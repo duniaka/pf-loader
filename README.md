@@ -9,8 +9,8 @@ pcsc-lite client library directly via `ctypes` instead (`--pcsc-lib`).
 ## Install
 
 ```
-uv sync           # dev
-uv tool install . # as a global CLI
+uv tool install git+https://github.com/duniaka/smartcard-personalizer # as a global CLI
+uv sync                                                               # dev
 ```
 
 Runs on Python ≥ 3.9. The only runtime dependency is `enlighten` (progress bar).
