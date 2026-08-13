@@ -13,7 +13,7 @@ uv tool install git+https://github.com/duniaka/smartcard-personalizer # as a glo
 uv sync                                                               # dev
 ```
 
-Runs on Python ≥ 3.9. The only runtime dependency is `enlighten` (progress bar).
+Runs on Python ≥ 3.9.
 
 ## Usage
 
