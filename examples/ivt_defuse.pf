@@ -1,0 +1,26 @@
+:Verifying ability to patch
+
+>00 50 00 00 00
+<90 00
+>00 5A 15 44 10
+<00 F0 6A F8 62 4A 5F 4B 00 F0 66 F8 C6 46 70 47 90 00
+>00 50 00 00 00
+<90 00
+>00 5A 15 64 10
+<02 F8 00 F0 7C F8 F0 46 59 4A 56 4B 00 F0 1A F8 90 00
+
+:Patching flash memory and running
+
+>00 50 00 00 00
+<90 00
+>00 5C 15 54 10 00 48 00 47 01 90 00 00 C0 46 C0 46 C0 46 C0 46
+<90 00
+>00 50 00 00 00
+<90 00
+
+# Upload the IVT-defuse payload into RAM
+>00 5C 90 00 38 00 48 00 47 09 90 00 00 7F 21 09 4A 30 B5 93 68 8B 43 18 00 07 49 C0 30 CC 1A 1D 68 E5 50 04 33 83 42 FA D1 91 60 BF F3 4F 8F BF F3 6F 8F 30 BD 00 ED 00 E0 00 18 00 20
+<90 00
+# Trigger the patched command
+>00 32 01 00 01 00
+<90 00

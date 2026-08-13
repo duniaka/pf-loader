@@ -1,10 +1,10 @@
 # smartcard-personalizer
 
-Drive smart-card personalization scripts over a real
-[pcsc-lite](https://pcsclite.apdu.fr/) daemon. Binds the pcsc-lite client
-library directly via `ctypes` (no pyscard, no pysim), so it reaches whichever
-`pcscd` is actually running — including a locally-launched one that Apple's
-bundled `PCSC.framework` would never see.
+Drive smart-card personalization scripts over PC/SC. Uses
+[pyscard](https://pyscard.sourceforge.io/) by default; for the case pyscard
+can't handle — reaching a locally-launched `pcscd` on macOS, which pyscard
+can't see because it's pinned to Apple's `PCSC.framework` — it can bind the
+pcsc-lite client library directly via `ctypes` instead (`--pcsc-lib`).
 
 ## Install
 
@@ -26,11 +26,13 @@ smartcard-personalizer --reader Omnikey -s a.pf   # pick reader by name substrin
 
 Also runnable as `pf-loader` or `python -m smartcard_personalizer`.
 
-### Pointing at the pcsc-lite library
+### Backends
 
-Defaults to `/opt/homebrew/opt/pcsc-lite/lib/libpcsclite_real.dylib` on macOS
-and `libpcsclite.so.1` elsewhere. Override with `--pcsc-lib PATH` or
-`PCSC_LIB`.
+By default it talks PC/SC through pyscard. Pass `--pcsc-lib` (or set `PCSC_LIB`)
+to switch to the direct ctypes bridge — needed to reach a locally-launched
+`pcscd` on macOS. The bare `--pcsc-lib` flag uses `$PCSC_LIB` or, failing that,
+`/opt/homebrew/opt/pcsc-lite/lib/libpcsclite_real.dylib` on macOS /
+`libpcsclite.so.1` elsewhere; give it a path to bind a specific library.
 
 ## `.pf` script format
 
