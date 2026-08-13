@@ -1,4 +1,4 @@
-# smartcard-personalizer
+# pf-loader
 
 Drive smart-card personalization scripts over PC/SC. Uses
 [pyscard](https://pyscard.sourceforge.io/) by default; for the case pyscard
@@ -9,8 +9,7 @@ pcsc-lite client library directly via `ctypes` instead (`--pcsc-lib`).
 ## Install
 
 ```
-uv tool install git+https://github.com/duniaka/smartcard-personalizer # as a global CLI
-uv sync                                                               # dev
+uv tool install git+https://github.com/duniaka/pf-loader
 ```
 
 Runs on Python ≥ 3.9.
@@ -18,13 +17,13 @@ Runs on Python ≥ 3.9.
 ## Usage
 
 ```
-smartcard-personalizer --list-readers
-smartcard-personalizer -s card.pf                 # run one script
-smartcard-personalizer -s a.pf -s b.pf            # run several, one card session
-smartcard-personalizer --reader Omnikey -s a.pf   # pick reader by name substring or index
+pf-loader --list-readers
+pf-loader -s card.pf                 # run one script
+pf-loader -s a.pf -s b.pf            # run several, one card session
+pf-loader --reader Omnikey -s a.pf   # pick reader by name substring or index
 ```
 
-Also runnable as `pf-loader` or `python -m smartcard_personalizer`.
+Also runnable as `python -m pf_loader`.
 
 ### Backends
 

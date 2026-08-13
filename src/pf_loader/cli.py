@@ -5,8 +5,8 @@ from typing import NamedTuple
 import click
 import enlighten
 
-from smartcard_personalizer.pcsclite_backend import DEFAULT_PCSC_LIB, RealPCSC
-from smartcard_personalizer.pyscard_backend import PyscardPCSC
+from pf_loader.pcsclite_backend import DEFAULT_PCSC_LIB, RealPCSC
+from pf_loader.pyscard_backend import PyscardPCSC
 
 SCARD_RESET_CARD = 0x0001
 SCARD_UNPOWER_CARD = 0x0002

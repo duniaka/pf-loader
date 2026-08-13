@@ -1,7 +1,7 @@
 [project]
-name = "smartcard-personalizer"
+name = "pf-loader"
 version = "0.1.0"
-description = "Drive smart-card personalization scripts (.pf) over real pcsc-lite"
+description = "Drive smart-card personalization scripts (.pf) over PC/SC"
 readme = "README.md"
 authors = [
     { name = "Illia Duniaka", email = "illia@duniaka.com" }
@@ -14,8 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-smartcard-personalizer = "smartcard_personalizer:main"
-pf-loader = "smartcard_personalizer:main"
+pf-loader = "pf_loader:main"
 
 [dependency-groups]
 dev = [
