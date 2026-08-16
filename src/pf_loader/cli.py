@@ -104,11 +104,11 @@ def interpret(scripts, total):
                 last = yield Send(parse_send(s[1:]))
                 done += 1
                 yield Emit(line)
+                yield Emit("<" + fmt(last if last is not None else b""))
                 yield Progress(done, total, stage)
             elif s.startswith("<"):
                 expected = parse_hex(s[1:])
                 actual = last if last is not None else b""
-                yield Emit("<" + fmt(actual))
                 if last is None or not matches(expected, actual):
                     yield Emit(
                         f"FAILED: expected '{fmt_expected(expected)}', "
