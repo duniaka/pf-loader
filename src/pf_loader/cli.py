@@ -52,6 +52,23 @@ def fmt_expected(expected):
     return " ".join("XX" if e is None else f"{e:02X}" for e in expected)
 
 
+def colorize(line):
+    s = line.strip()
+    if s.startswith("FAILED"):
+        return click.style(line, fg="red", bold=True)
+    if s.startswith(">"):
+        return click.style(line, fg="cyan", bold=True)
+    if s.startswith("<"):
+        return click.style(line, fg="green")
+    if s in ("WARM", "COLD") or s.startswith("# ATR:"):
+        return click.style(line, fg="magenta", bold=True)
+    if s.startswith(":"):
+        return click.style(line, fg="yellow", bold=True)
+    if s.startswith("#"):
+        return click.style(line, dim=True)
+    return line
+
+
 def count_sends(scripts):
     return sum(1 for _n, lines in scripts for ln in lines if ln.strip().startswith(">"))
 
@@ -98,12 +115,10 @@ def interpret(scripts, total):
                         f"got '{fmt(actual)}'. Aborted."
                     )
                     return 1
-            elif s == "WARM":
-                yield Reset(cold=False)
+            elif s in ("WARM", "COLD"):
+                atr = yield Reset(cold=s == "COLD")
                 yield Emit(line)
-            elif s == "COLD":
-                yield Reset(cold=True)
-                yield Emit(line)
+                yield Emit(f"# ATR: {fmt(atr)}")
             elif s.startswith(":"):
                 stage = s
                 yield Emit(line)
@@ -134,8 +149,9 @@ def run(scripts, card, out=None, err=None):
                 reply = card.send(eff.apdu)
             elif isinstance(eff, Reset):
                 card.cold() if eff.cold else card.warm()
+                reply = card.atr()
             elif isinstance(eff, Emit):
-                print(eff.text, file=out)
+                click.echo(colorize(eff.text), file=out)
             elif isinstance(eff, Progress):
                 bar.desc = eff.stage
                 bar.count = eff.done
@@ -159,6 +175,9 @@ class Card:
 
     def cold(self):
         self.proto = self.p.reconnect(self.handle, disposition=SCARD_UNPOWER_CARD)
+
+    def atr(self):
+        return self.p.get_atr(self.handle)
 
 
 def _pick_reader(readers, sel):
@@ -213,15 +232,17 @@ def main(scripts, reader, pcsc_lib, list_readers):
         raise SystemExit("nothing to do: pass -s/--script FILE (or --list-readers)")
 
     reader = _pick_reader(readers, reader)
-    print(f"reader: {reader}", file=sys.stderr)
+    click.secho(f"reader: {reader}", fg="blue", bold=True, err=True)
     handle, proto = p.connect(reader)
-    print(f"ATR: {p.get_atr(handle).hex(' ')}", file=sys.stderr)
+    click.secho(
+        f"# ATR: {fmt(p.get_atr(handle))}", fg="magenta", bold=True, err=True
+    )
 
     loaded = [(f.name, f.read().splitlines()) for f in scripts]
     try:
         code = run(loaded, Card(p, handle, proto))
     except ValueError as e:
-        print(f"error: {e}", file=sys.stderr)
+        click.secho(f"error: {e}", fg="red", bold=True, err=True)
         code = 2
     finally:
         p.disconnect(handle)
